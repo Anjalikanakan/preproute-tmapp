@@ -81,6 +81,7 @@ export interface Question {
   subject?: string;
   subject_id?: string;
   topic_id?: string;
+  sub_topic_id?: string;
   media_url?: string;
   test_id?: string;
 }

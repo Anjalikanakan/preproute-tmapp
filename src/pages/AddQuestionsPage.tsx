@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -36,6 +36,7 @@ const schema = z.object({
   explanation:    z.string().optional(),
   difficulty:     z.string().optional(),
   topic_id:       z.string().optional(),
+  sub_topic_id:   z.string().optional(),
   media_url:      z.string().optional(),
 });
 
@@ -67,6 +68,7 @@ export default function AddQuestionsPage() {
   const [subjects,         setSubjects]         = useState<Subject[]>([]);
   const [topics,           setTopics]           = useState<Topic[]>([]);
   const [subTopics,        setSubTopics]        = useState<SubTopic[]>([]);
+  const pendingSubTopicRef = useRef<string | null>(null);
 
   const {
     register, handleSubmit, reset, setValue, watch,
@@ -110,7 +112,13 @@ export default function AddQuestionsPage() {
   useEffect(() => {
     if (selectedTopic) {
       getSubTopicsByTopics([selectedTopic])
-        .then((r) => setSubTopics(r.data.data || []))
+        .then((r) => {
+          setSubTopics(r.data.data || []);
+          if (pendingSubTopicRef.current) {
+            setValue('sub_topic_id', pendingSubTopicRef.current);
+            pendingSubTopicRef.current = null;
+          }
+        })
         .catch(() => {});
     }
   }, [selectedTopic]);
@@ -137,6 +145,7 @@ export default function AddQuestionsPage() {
     setValue('explanation',    '');
     setValue('difficulty',     '');
     setValue('topic_id',       '');
+    setValue('sub_topic_id',   '');
     setValue('subject',        resolvedSubjectId ?? '');
   };
 
@@ -165,7 +174,13 @@ export default function AddQuestionsPage() {
       setValue('correct_option', (q.correct_option as QuestionForm['correct_option']) ?? 'option1');
       setValue('explanation',    q.explanation  ?? '');
       setValue('difficulty',     q.difficulty   ?? '');
+      setValue('sub_topic_id',   '');
       setValue('topic_id',       q.topic_id     ?? '');
+      if ((q.topic_id ?? '') === selectedTopic) {
+        setValue('sub_topic_id', q.sub_topic_id ?? '');
+      } else {
+        pendingSubTopicRef.current = q.sub_topic_id ?? null;
+      }
       setValue('subject',        q.subject ?? resolvedSubjectId ?? '');
       setEditIndex(index);
     } else {
@@ -178,7 +193,7 @@ export default function AddQuestionsPage() {
   const saveToBackend = async (list: Question[]) => {
     setSaving(true);
     try {
-      const toPayload = ({ topic_id: _t, subject_id: _si, ...rest }: Question) => ({ ...rest, test_id: id });
+      const toPayload = ({ topic_id: _t, subject_id: _si, sub_topic_id: _sti, ...rest }: Question) => ({ ...rest, test_id: id });
       const newQs  = list.filter((q) => !q.id).map(toPayload);
       let   allIds = list.filter((q) => !!q.id).map((q) => q.id as string);
 
@@ -227,7 +242,6 @@ export default function AddQuestionsPage() {
 
     if (!isLastQuestion) {
       const nextQ = updatedList[nextIndex];
-      console.log('nextQ', nextQ);
       if (nextQ) {
         
         setValue('question',       nextQ.question);
@@ -246,6 +260,7 @@ export default function AddQuestionsPage() {
       }
       setCurrentIndex(nextIndex);
     } else {
+      toast.success('All questions saved successfully, you can now publish the test');
       reset({ correct_option: 'option1' });
       if (resolvedSubjectId) setValue('subject', resolvedSubjectId);
     }
@@ -354,7 +369,7 @@ export default function AddQuestionsPage() {
                 <span className="aq-meta-label">Subject</span>
                 <span className="aq-meta-value">: {currentTest?.subject ?? '—'}</span>
               </div>
-              {currentTest?.topics.length > 0 && (
+              {(currentTest?.topics?.length ?? 0) > 0 && (
                 <div className="aq-meta-row">
                   <span className="aq-meta-label">Topic</span>
                   <div className="aq-tags">: 
@@ -364,11 +379,11 @@ export default function AddQuestionsPage() {
                   </div>
                 </div>
               )}
-              {currentTest?.sub_topics.length > 0 && (
+              {(currentTest?.sub_topics?.length ?? 0) > 0 && (
                 <div className="aq-meta-row">
                   <span className="aq-meta-label">Sub Topic</span>
                   <div className="aq-tags">: 
-                    {currentTest?.sub_topics.slice(0, 4).map(st => (
+                    {currentTest?.sub_topics?.slice(0, 4).map(st => (
                       <span key={st} className="aq-tag">{st}</span>
                     ))}
                   </div>
@@ -512,7 +527,7 @@ export default function AddQuestionsPage() {
                 <div className="aq-settings__field">
                   <label>Sub-topic</label>
                   <div className="select-wrapper">
-                    <select className="form-input w-100" {...register('subject')}>
+                    <select className="form-input w-100" {...register('sub_topic_id')}>
                       <option value="">Select from Drop-down</option>
                       {subTopics.map(st => (
                         <option key={st.id} value={st.id}>{st.name}</option>

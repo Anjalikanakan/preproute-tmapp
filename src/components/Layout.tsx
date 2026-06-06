@@ -75,7 +75,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 <img src={UserAvatar} alt="User Avatar" />
               </div>
               <div className="user-info">
-                <span className="user-name">{user?.name.toLowerCase() || 'Alex Wando'}</span>
+                <span className="user-name">{user?.name?.toLowerCase() || 'Alex Wando'}</span>
                 <span className="user-role">Admin</span>
               </div>
               <ChevronDown size={18} color="#374151" className={`dropdown-chevron${dropdownOpen ? ' open' : ''}`} />

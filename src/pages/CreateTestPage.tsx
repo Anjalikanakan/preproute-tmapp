@@ -54,7 +54,6 @@ export default function CreateTestPage() {
       total_time: 60,
       total_marks: 100,
       total_questions: 25,
-      status: 'draft',
     },
   });
 

@@ -48,7 +48,7 @@ export default function PreviewPublishPage() {
   const [endTime,         setEndTime]         = useState('');
   const [scheduleDate,    setScheduleDate]    = useState('');
   const [scheduleTime,    setScheduleTime]    = useState('');
-  const [currentIndex,    setCurrentIndex]    = useState(0);
+  const [_currentIndex,   setCurrentIndex]    = useState(0);
 
   useEffect(() => {
     if (!id) return;
