@@ -412,7 +412,7 @@
     overflow: auto;
 
     @media (min-width: 992px) {
-      height: calc(50vh - #{$header-height});
+      height: calc(52vh - #{$header-height});
     }
 
     &__header {
@@ -429,6 +429,19 @@
 
     form {
       padding: 16px 0px;
+    }
+    &.viewOnly{
+      .aq{
+        &-toolbar, &-editor__btns{
+          pointer-events: none;
+          button{
+            &:hover{
+              background: transparent !important;
+              color: var(--form-border) !important;
+            }
+          }
+        }
+      }
     }
   }
 

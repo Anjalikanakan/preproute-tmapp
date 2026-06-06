@@ -25,10 +25,16 @@
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
@@ -130,6 +136,7 @@
 
 .filter-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
@@ -266,6 +273,12 @@
     background: #f5f3ff;
     color: var(--draft-color);
     border: 1px solid #ddd6fe;
+  }
+  &-info {
+    color: #fff;
+    background-color: #17a2b8;
+    border: 1px solid #29dbf7;
+    padding: 6px 10px;
   }
 }
 

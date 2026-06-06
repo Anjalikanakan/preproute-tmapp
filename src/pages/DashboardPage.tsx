@@ -69,6 +69,7 @@ export default function DashboardPage() {
     total: tests.length,
     live: tests.filter((t) => t.status === 'live').length,
     draft: tests.filter((t) => t.status === 'draft' || !t.status).length,
+    scheduled: tests.filter((t) => t.status === 'scheduled').length
   };
 
   const formatDate = (dateStr: string) => {
@@ -77,8 +78,19 @@ export default function DashboardPage() {
     } catch { return dateStr; }
   };
 
-  const getStatusBadge = (status: string | null) => {
+  const getStatusBadge = (status: string | null, scheduled_date?: string) => {
     if (status === 'live') return <span className="badge badge-live">Live</span>;
+    if (status === 'scheduled') {
+      let dateStr = '—', timeStr = '';
+      if (scheduled_date) {
+        const d = new Date(scheduled_date);
+        dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      }
+      return (
+          <span className="badge badge-info" title={`Scheduled for ${dateStr} ${timeStr}`}>Scheduled</span>
+      );
+    }
     return <span className="badge badge-draft">Draft</span>;
   };
 
@@ -117,6 +129,13 @@ export default function DashboardPage() {
             <div className="stat-label">Drafts</div>
           </div>
         </div>
+        <div className="stat-card">
+          <div className="stat-icon stat-draft"><FileText size={20} /></div>
+          <div>
+            <div className="stat-number">{stats.scheduled}</div>
+            <div className="stat-label">Scheduled</div>
+          </div>
+        </div>
       </div>
 
       <div className="filters-bar">
@@ -131,7 +150,7 @@ export default function DashboardPage() {
           />
         </div>
         <div className="filter-tabs">
-          {['all', 'live', 'draft'].map((s) => (
+          {['all', 'live', 'draft', 'scheduled'].map((s) => (
             <button
               key={s}
               className={`filter-tab ${statusFilter === s ? 'active' : ''}`}
@@ -192,7 +211,7 @@ export default function DashboardPage() {
                       )}
                     </div>
                   </td>
-                  <td>{getStatusBadge(test.status)}</td>
+                  <td>{getStatusBadge(test.status, test.scheduled_date)}</td>
                   <td className="date-cell">{formatDate(test.created_at)}</td>
                   <td>
                     <div className="action-buttons">

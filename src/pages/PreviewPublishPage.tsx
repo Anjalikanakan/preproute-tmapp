@@ -6,7 +6,8 @@ import {
 } from '../api/endpoints';
 import { useTestContext } from '../context/TestContext';
 import {
-  CheckCircle, Pencil,
+  CheckCircle, Pencil, Plus, Download, Italic, Bold, Underline, Strikethrough, Link2,
+  AlignLeft, AlignCenter, AlignRight, AlignJustify, ImageIcon, 
   ChevronsLeft, ChevronsRight, CircleCheck, 
 } from 'lucide-react';
 import SubjectIcon from '../assets/images/ar_stickers.svg';
@@ -44,13 +45,13 @@ export default function PreviewPublishPage() {
 
   const [publishing,      setPublishing]      = useState(false);
   const [sidebarCollapsed,setSidebarCollapsed] = useState(false);
-  const [publishTab,      setPublishTab]      = useState<'live' | 'draft'>('live');
+  const [publishTab,      setPublishTab]      = useState<'draft' | 'scheduled'>('draft');
   const [liveUntil,       setLiveUntil]       = useState('always');
   const [endDate,         setEndDate]         = useState('');
   const [endTime,         setEndTime]         = useState('');
   const [scheduleDate,    setScheduleDate]    = useState('');
   const [scheduleTime,    setScheduleTime]    = useState('');
-  const [_currentIndex,   setCurrentIndex]    = useState(0);
+  const [currentIndex,    setCurrentIndex]    = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -67,19 +68,19 @@ export default function PreviewPublishPage() {
 
   const handlePublish = async () => {
     if (!id) return;
+    if (publishTab === 'scheduled' && (!scheduleDate || !scheduleTime)) {
+      toast.error('Please select a schedule date and time');
+      return;
+    }
     try {
       setPublishing(true);
-      await publishTest(id, publishTab);
-      if (publishTab === 'live') {
-        toast.success('Test published successfully!');
-      }
-      else{
-        toast.success('Test saved as draft!');
-      }
-      
+      const scheduled_date = publishTab === 'scheduled' ? `${scheduleDate}T${scheduleTime}:00` : undefined;
+      await publishTest(id, publishTab === 'draft' ? 'live' : 'scheduled', scheduled_date);
+      toast.success(publishTab === 'draft' ? 'Test published successfully!' : `Test scheduled for ${scheduleDate} at ${scheduleTime}!`);
       navigate('/dashboard');
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
+      console.log(e);
       toast.error(e.response?.data?.message || 'Failed to publish');
     } finally {
       setPublishing(false);
@@ -205,24 +206,105 @@ export default function PreviewPublishPage() {
               )}
             </div>
           </div>
+          {viewOnly && (() => {
+            const q = questions[currentIndex];
+            if (!q) return (
+              <div className="aq-editor">
+                <div className="aq-editor__header">
+                  <span className="aq-q-counter">
+                    Question <span className="aq-q-counter__num">{currentIndex + 1}</span>
+                    <span className="aq-q-counter__total">/{totalQ}</span>
+                  </span>
+                </div>
+                <p style={{ padding: '24px', color: 'var(--text-muted)' }}>No question data available.</p>
+              </div>
+            );
+            const opts = [
+              { key: 'option1', label: q.option1 },
+              { key: 'option2', label: q.option2 },
+              { key: 'option3', label: q.option3 },
+              { key: 'option4', label: q.option4 },
+            ];
+            return (
+              <div className="aq-editor viewOnly">
+                <div className="aq-editor__header">
+                  <span className="aq-q-counter">
+                    Question{' '}
+                    <span className="aq-q-counter__num">{currentIndex + 1}</span>
+                    <span className="aq-q-counter__total">/{totalQ}</span>
+                  </span>
+                  <div className="aq-editor__btns">
+                    <button type="button" className="aq-btn-action"><Plus size={13} /> MCQ</button>
+                    <button type="button" className="aq-btn-action"><Download size={13} /> CSV</button>
+                  </div>
+                </div>
+                <form>
+                  <div className='aq-toolbar'>
+                    <button type="button" title="Italic"><Italic size={13} /></button>
+                    <button type="button" title="Bold"><Bold size={13} /></button>
+                    <button type="button" title="Underline"><Underline size={13} /></button>
+                    <button type="button" title="Strikethrough"><Strikethrough size={13} /></button>
+                    <span className="aq-toolbar__sep" />
+                    <button type="button" title="Link"><Link2 size={13} /></button>
+                    <span className="aq-toolbar__sep" />
+                    <button type="button" title="Align left"><AlignLeft size={13} /></button>
+                    <button type="button" title="Align center"><AlignCenter size={13} /></button>
+                    <button type="button" title="Align right"><AlignRight size={13} /></button>
+                    <button type="button" title="Justify"><AlignJustify size={13} /></button>
+                    <span className="aq-toolbar__sep" />
+                    <button type="button" title="Insert image"><ImageIcon size={13} /></button>
+                  </div>
+
+                  <div className="aq-field" style={{ pointerEvents: 'none' }}>
+                  <p className="aq-textarea" style={{ minHeight: 80, whiteSpace: 'pre-wrap' }}>{q.question}</p>
+                  </div>
+
+                  <p className="aq-options-label">Options</p>
+                  <div className="aq-options">
+                    {opts.map(opt => (
+                      <div key={opt.key} className={`aq-option${q.correct_option === opt.key ? ' correct' : ''}`}>
+                        <input
+                          type="radio"
+                          className="aq-opt-radio"
+                          readOnly
+                          checked={q.correct_option === opt.key}
+                        />
+                        <div className="aq-option-input">
+                          <span className="aq-opt-input" style={{ display: 'block', padding: '8px 12px' }}>{opt.label}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {q.explanation && (
+                    <div className="aq-solution">
+                      <p className="aq-solution__label">Solution</p>
+                      <div className="aq-field aq-solution__field" style={{ pointerEvents: 'none' }}>
+                        <p className="aq-textarea" style={{ minHeight: 60, whiteSpace: 'pre-wrap' }}>{q.explanation}</p>
+                      </div>
+                    </div>
+                  )}
+                </form>
+              </div>
+            );
+          })()}
 
           {!viewOnly && (
             <div className="pp-publish-card">
               <div className="type-tabs">
                 <button type="button"
-                  className={`tab-btn${publishTab === 'live' ? ' active' : ''}`}
-                  onClick={() => setPublishTab('live')}
+                  className={`tab-btn${publishTab === 'draft' ? ' active' : ''}`}
+                  onClick={() => setPublishTab('draft')}
                 >
                   Publish Now
                 </button>
                 <button type="button"
-                  className={`tab-btn${publishTab === 'draft' ? ' active' : ''}`}
-                  onClick={() => setPublishTab('draft')}
+                  className={`tab-btn${publishTab === 'scheduled' ? ' active' : ''}`}
+                  onClick={() => setPublishTab('scheduled')}
                 >
                   Schedule Publish
                 </button>
               </div>
-              {publishTab === 'draft' && (
+              {publishTab === 'scheduled' && (
                 <div className="pp-schedule">
                   <h4 className="pp-header__title">Select Date and Time</h4>
                   <div className="pp-custom-duration">

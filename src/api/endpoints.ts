@@ -43,5 +43,5 @@ export const bulkCreateQuestions = (questions: Question[]) =>
 export const fetchBulkQuestions = (question_ids: string[]) =>
   api.post<ApiResponse<Question[]>>('/questions/fetchBulk', { question_ids });
 
-export const publishTest = (id: string, status: string) =>
-  api.put<ApiResponse<Test>>(`/tests/${id}`, { status});
+export const publishTest = (id: string, status: string, scheduled_date?: string) =>
+  api.put<ApiResponse<Test>>(`/tests/${id}`, { status, ...(scheduled_date ? { scheduled_date } : {}) });

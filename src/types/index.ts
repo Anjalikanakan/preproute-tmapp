@@ -39,7 +39,8 @@ export interface Test {
   sub_topics?: string[];
   sub_topic_ids?: string[];
   type?: string;
-  status: 'draft' | 'live' | null;
+  status: 'draft' | 'live' | 'scheduled' | null;
+  scheduled_date?: string;
   difficulty?: string;
   correct_marks?: number;
   wrong_marks?: number;
@@ -64,7 +65,7 @@ export interface TestFormData {
   total_time: number;
   total_marks: number;
   total_questions: number;
-  status: null | 'draft' | 'live';
+  status: null | 'draft' | 'live' | 'scheduled';
 }
 
 export interface Question {
