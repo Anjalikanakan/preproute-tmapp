@@ -43,8 +43,8 @@ const schema = z.object({
 type QuestionForm = z.infer<typeof schema>;
 
 const TABS = [
-  { key: 'chapter', label: 'Chapter Wise' },
-  { key: 'practice', label: 'PYQ' },
+  { key: 'chapterwise', label: 'Chapter Wise' },
+  { key: 'pyq', label: 'PYQ' },
   { key: 'mock', label: 'Mock Test' },
 ];
 
@@ -260,7 +260,7 @@ export default function AddQuestionsPage() {
       }
       setCurrentIndex(nextIndex);
     } else {
-      toast.success('All questions saved successfully, you can now publish the test');
+      toast.success('Questions saved, publish the test');
       reset({ correct_option: 'option1' });
       if (resolvedSubjectId) setValue('subject', resolvedSubjectId);
     }
@@ -507,7 +507,7 @@ export default function AddQuestionsPage() {
                       <option value="">Select from Drop-down</option>
                       <option value="easy">Easy</option>
                       <option value="medium">Medium</option>
-                      <option value="difficult">Difficult</option>
+                      <option value="hard">Difficult</option>
                     </select>
                   </div>
                 </div>

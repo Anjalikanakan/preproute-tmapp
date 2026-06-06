@@ -41,7 +41,7 @@ export default function DashboardPage() {
 
   const handleView = (test: Test) => {
     setCurrentTest(test);
-    navigate(`/test/${test.id}/preview`);
+    navigate(`/test/${test.id}/preview?mode=view`);
   };
 
   const handleDelete = async (id: string) => {

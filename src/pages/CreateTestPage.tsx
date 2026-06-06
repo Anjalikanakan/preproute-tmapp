@@ -160,7 +160,7 @@ export default function CreateTestPage() {
 
   const TABS = [
     { key: 'chapterwise', label: 'Chapter Wise' },
-    { key: 'practice', label: 'PYQ' },
+    { key: 'pyq', label: 'PYQ' },
     { key: 'mock', label: 'Mock Test' },
   ];
 

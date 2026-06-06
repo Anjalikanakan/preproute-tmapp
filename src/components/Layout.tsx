@@ -38,7 +38,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className={`app-layout${collapsed ? ' sidebar-collapsed' : ''}`}>
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <img src={logo} alt="PrepRoute" className="sidebar-logo__img" />
+          <a href='/'>
+            <img src={logo} alt="PrepRoute" className="sidebar-logo__img" />
+          </a>
           <button
             className="sidebar-toggle"
             onClick={() => setCollapsed(c => !c)}
