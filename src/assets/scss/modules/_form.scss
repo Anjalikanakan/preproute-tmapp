@@ -1,0 +1,129 @@
+.form {
+  &-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  &-input {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    border: 0.5px solid var(--form-border);
+    background: var(--surface);
+    color: var(--text-primary);
+    transition: all 0.2s;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+
+    &::placeholder {
+      color: $input-border;
+    }
+
+    &:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+      outline: none;
+    }
+
+    &.error {
+      border-color: var(--error);
+    }
+
+    &.correct-input {
+      border-color: var(--success);
+      background: var(--success-light);
+    }
+
+    &.textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    &-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+  }
+
+  &-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+  }
+
+  &-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  &-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+}
+
+label {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+select.form-input {
+  cursor: pointer;
+}
+
+.input {
+  &-wrapper {
+    position: relative;
+
+    .form-input {
+      padding-right: 38px;
+      width: 100%;
+    }
+  }
+
+  &-icon-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    color: var(--text-muted);
+    padding: 4px;
+  }
+}
+
+.error-msg {
+  font-size: 0.78rem;
+  color: var(--error);
+  font-weight: 500;
+}
+
+.span-2 {
+  grid-column: span 2;
+}

@@ -1,0 +1,17 @@
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  font-size: 13px;
+  color: $text-muted;
+
+  span.bc-active {
+    color: $text-primary;
+    font-weight: 500;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}

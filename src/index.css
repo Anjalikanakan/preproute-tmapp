@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== LAYOUT ===== */
+.app-layout { min-height: 100vh; display: flex; flex-direction: column; }
+
+.user-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.main-content { flex: 1; padding: 28px 24px; max-width: 1100px; margin: 0 auto; width: 100%; }
+
+.w-full { width: 100%; justify-content: center; }
+
+/* ===== STATES ===== */
+.loading-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px; gap: 14px; color: var(--text-muted);
+}
+.loading-state.full { min-height: calc(100vh - var(--navbar-h)); }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px; gap: 12px; color: var(--text-muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+.empty-state h3 { font-size: 1.1rem; color: var(--text-primary); }
+.empty-state p { font-size: 0.875rem; }
+.empty-state.small { padding: 30px; }
+
+/* ===== SPINNER ===== */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.spinner.large { width: 36px; height: 36px; border-color: var(--border); border-top-color: var(--accent); }
+.spinner.small { width: 13px; height: 13px; border-color: var(--border); border-top-color: var(--accent); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .main-content { padding: 20px 16px; }
+  .login-left { display: none; }
+  .login-right { width: 100%; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .form-grid, .form-grid-3, .options-grid { grid-template-columns: 1fr; }
+  .span-2 { grid-column: span 1; }
+  .dashboard-header { flex-direction: column; gap: 12px; }
+}
+
